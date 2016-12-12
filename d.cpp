@@ -45,6 +45,7 @@ public:
 
 struct smart_array {
 public:
+    // initialize array with given data.
     smart_array(std::vector<int> &values, const int max_element) {
         this->values = values;
         values_count = values.size();
@@ -52,6 +53,12 @@ public:
         fill_roots(build(0, values_count - 1));
     }
 
+    // function get_right - function for finding the minimum value of right index of the array,
+    // such that there is no less different elements in array than given 
+    // between given left index and right index.
+    // parameter const int left_index - left index of array.
+    // parameter const int differece - number of different elements in array.
+    // return int - right index of the array.
     int get_right(
         const int left_index, 
         const int differece) {
@@ -150,22 +157,35 @@ private:
     }
 };
 
+
+// function read_data - procedure for reading input data from the stream.
+// parameter std::istream &_Istr - address of any input stream.
+// parameter int &values_count - address of the integer, where should be stored the size of the array.
+// parameter int &max_value - address of the integer, where should be stored the maximum value in the array.
+// parameter std::vector<int> &values - address of the vector, where should be stored elements of the array.
+// parameter int &queries_count - address of the integer, where should be stored the number of given queries.
 void read_data(
+    std::istream &_Istr,
     int &values_count,
     int &max_value,
     std::vector<int> &values,
     int &queries_count) {
-    stream_manager::read_int(std::cin, values_count);
-    stream_manager::read_int(std::cin, max_value);
-    stream_manager::read_vector(std::cin, values, values_count);
-    stream_manager::read_int(std::cin, queries_count);
+    stream_manager::read_int(_Istr, values_count);
+    stream_manager::read_int(_Istr, max_value);
+    stream_manager::read_vector(_Istr, values, values_count);
+    stream_manager::read_int(_Istr, queries_count);
 }
 
+// function read_data - procedure for reading input data from the stream.
+// parameter std::istream &_Istr - address of any input stream.
+// parameters int &query_x, int &query_y - addresses of the integeres, 
+// where should be stored the information about queries.
 void read_query(
+    std::istream &_Istr,
     int &query_x,
     int &query_y) {
-    stream_manager::read_int(std::cin, query_x);
-    stream_manager::read_int(std::cin, query_y);
+    stream_manager::read_int(_Istr, query_x);
+    stream_manager::read_int(_Istr, query_y);
 }
 
 int main() {
@@ -176,7 +196,7 @@ int main() {
 
     int values_count, max_value, queries_count;
     std::vector<int> values;
-    read_data(values_count, max_value, values, queries_count);
+    read_data(std::cin, values_count, max_value, values, queries_count);
     
     for (int i = 0; i < values_count; ++i) {
         --values[i];
@@ -188,7 +208,7 @@ int main() {
 
     for (int i = 0; i < queries_count; ++i) {
         int query_x, query_y;
-        read_query(query_x, query_y);
+        read_query(std::cin, query_x, query_y);
 
         const int left = ((query_x + last_answer) % values_count);
         const int difference = ((query_y + last_answer) % max_value) + 1;
