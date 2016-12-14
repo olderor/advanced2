@@ -140,17 +140,16 @@ private:
     }
 
     void fill_roots(node *root) {
-        std::vector<int> next(values_count);
         std::vector<int> last(max_element, -1);
         roots.clear();
         roots.resize(values_count);
         for (int i = values_count - 1; i >= 0; --i) {
-            next[i] = last[values[i]];
+            int previous_index = last[values[i]];
             last[values[i]] = i;
 
             root = set(root, 0, values_count - 1, i, 1);
-            if (next[i] >= 0) {
-                root = set(root, 0, values_count - 1, next[i], 0);
+            if (previous_index >= 0) {
+                root = set(root, 0, values_count - 1, previous_index, 0);
             }
             roots[i] = root;
         }
@@ -160,10 +159,10 @@ private:
 
 // function read_data - procedure for reading input data from the stream.
 // parameter std::istream &_Istr - address of any input stream.
-// parameter int &values_count - address of the integer, where should be stored the size of the array.
-// parameter int &max_value - address of the integer, where should be stored the maximum value in the array.
-// parameter std::vector<int> &values - address of the vector, where should be stored elements of the array.
-// parameter int &queries_count - address of the integer, where should be stored the number of given queries.
+// parameter int &values_count - integer, where should be stored the size of the array.
+// parameter int &max_value - integer, where should be stored the maximum value in the array.
+// parameter std::vector<int> &values - vector, where should be stored elements of the array.
+// parameter int &queries_count - integer, where should be stored the number of given queries.
 void read_data(
     std::istream &_Istr,
     int &values_count,
