@@ -28,7 +28,6 @@ public:
         std::istream &_Istr,
         std::vector<int> &vector,
         const int size) {
-        vector.clear();
         vector.resize(size);
         for (int i = 0; i < size; ++i) {
             _Istr >> vector[i];
@@ -43,10 +42,12 @@ public:
     }
 };
 
-struct smart_array {
+// Persistent Segment Tree structure.
+// Use for solving the given problem.
+struct persistent_segment_tree {
 public:
     // initialize array with given data.
-    smart_array(std::vector<int> &values, const int max_element) {
+    persistent_segment_tree(std::vector<int> &values, const int max_element) {
         this->values = values;
         values_count = values.size();
         this->max_element = max_element;
@@ -60,7 +61,7 @@ public:
     // parameter const int differece - number of different elements in array.
     // return int - right index of the array.
     int get_right(
-        const int left_index, 
+        const int left_index,
         const int differece) {
         diff = differece;
         int answer = get(roots[left_index], 0, values_count - 1) + 1;
@@ -71,6 +72,8 @@ public:
     }
 
 private:
+    // Node structure.
+    // Use for storing different versions of the tree.
     struct node {
         node *left;
         node *right;
@@ -84,6 +87,12 @@ private:
     int max_element;
     int diff;
 
+    // function get - function for finding the minimum value of right index of the array,
+    // such that there is no less different elements in array than given 
+    // between given left index and right index.
+    // parameter const int current_left - left index of array.
+    // parameter const int current_right - right index of array (maximum value).
+    // return int - right index of the array.
     int get(node* root, const int current_left, const int current_right) {
         if (diff == 0) {
             return current_left - 1;
@@ -100,6 +109,13 @@ private:
         return answer;
     }
 
+    // function set - function for updating values.
+    // parameter node *root - pointer to the current node, where should be updating.
+    // parameter const int left - left index of array.
+    // parameter const int right - right index of array.
+    // parameter const int index - index in the array where the value should be updated.
+    // parameter const int value - new value.
+    // return node* - new version of the tree.
     node* set(
         node *root,
         const int left,
@@ -126,6 +142,10 @@ private:
         return new_node;
     }
 
+    // function build - function for creating a tree.
+    // parameter const int left - left index of array.
+    // parameter const int right - right index of array.
+    // return node* - new version of the tree.
     node* build(const int left, const int right) {
         node *new_node = new node();
         if (left == right) {
@@ -139,12 +159,14 @@ private:
         return new_node;
     }
 
+    // function fill_roots - function for creating a segment tree
+    // with given values in the array.
+    // parameter node *root - pointer to the current root of the tree.
     void fill_roots(node *root) {
         std::vector<int> last(max_element, -1);
-        roots.clear();
         roots.resize(values_count);
         for (int i = values_count - 1; i >= 0; --i) {
-            int previous_index = last[values[i]];
+            const int previous_index = last[values[i]];
             last[values[i]] = i;
 
             root = set(root, 0, values_count - 1, i, 1);
@@ -196,12 +218,12 @@ int main() {
     int values_count, max_value, queries_count;
     std::vector<int> values;
     read_data(std::cin, values_count, max_value, values, queries_count);
-    
+
     for (int i = 0; i < values_count; ++i) {
         --values[i];
     }
 
-    smart_array arr = smart_array(values, max_value);
+    persistent_segment_tree arr = persistent_segment_tree(values, max_value);
 
     int last_answer = 0;
 
